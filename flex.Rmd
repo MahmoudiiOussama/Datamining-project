@@ -1,0 +1,904 @@
+---
+title: "Datamining Project"
+output: 
+  flexdashboard::flex_dashboard:
+    orientation: columns
+    vertical_layout: fill
+    css : styles.css
+editor_options: 
+  markdown: 
+    wrap: 72
+---
+
+```{r setup, include=FALSE}
+library(flexdashboard)
+data=read.csv("HR_comma_sep.csv", sep=",")
+#View(data)
+#str(data)
+#summary(data)
+#df_scaled = scale(data[,1:8])
+#df_scaled = cbind.data.frame(df_scaled , data$salary)
+#View(df_scaled)
+#colnames(df_scaled)[9] = "salary"
+#df_scaled$salary = as.character(df_scaled$salary)
+#df_scaled$salary[df_scaled$salary=='low']<-"0"
+#df_scaled$salary[df_scaled$salary=='medium']<-"0"
+#df_scaled$salary[df_scaled$salary=='high']<-"1"
+#df_scaled$salary =as.factor(df_scaled$salary)
+#attach(data)
+#for ( i in 7:10) {
+#   data[,i] <- as.factor(data[,i])
+#}
+#str(data)
+df_scaled = scale(data[,1:8])
+df_scaled = cbind.data.frame(df_scaled , data$salary)
+
+View(df_scaled)
+colnames(df_scaled)[9] = "salary"
+df_scaled$salary = as.character(df_scaled$salary)
+df_scaled$salary[df_scaled$salary=='low']<-"0"
+df_scaled$salary[df_scaled$salary=='medium']<-"0"
+df_scaled$salary[df_scaled$salary=='high']<-"1"
+df_scaled$salary =as.factor(df_scaled$salary)
+df_scaled1 = as.data.frame(df_scaled)
+colnames(df_scaled1)[9] = "salary"
+df_scaled1$salary = as.character(df_scaled1$salary)
+df_scaled1$salary[df_scaled1$salary=='low']<-"0"
+df_scaled1$salary[df_scaled1$salary=='medium']<-"0"
+df_scaled1$salary[df_scaled1$salary=='high']<-"1"
+df_scaled1$salary =as.numeric(df_scaled1$salary)
+dfdf = as.data.frame(df_scaled1)
+View(df_scaled1)
+attach(data)
+for ( i in 7:10) {
+   data[,i] <- as.factor(data[,i])
+}
+left = data[,8]
+View(left)
+str(data)
+
+library(ggplot2)
+library(purrr)
+library(tidyr)
+library(ggplot2)
+
+
+#etude univariée #plotly
+
+
+#library(plotly)
+#library(RColorBrewer)
+##p <- ggplot(data, aes(x = left)) +
+##  geom_bar(fill=c('steelblue', 'red'),size=2) + 
+##  ylab("employees") 
+#p=ggplot(data=data, aes(x=left)) +geom_bar(stat="count", position=position_dodge(),fill=c('steelblue', #'red'),size=0.5 ,colour="black") + scale_fill_manual(values=c("#999999", "#E69F00"))+ggtitle("How many employees #left/stayed ")+scale_x_discrete(labels = c('Left','Stayed'))
+#
+#ggplotly(p)  
+
+library(highcharter)
+options(highcharter.theme = hc_theme_smpl(tooltip = list(valueDecimals = 2)))
+library(dplyr)
+table(left)[1]
+
+left0=as.data.frame(sum(table(data$left)[1]))
+View(left0)
+leftt=as.data.frame(left0)
+View(leftt)
+View(x)
+leftt[2,]=sum(table(data$left)[2])
+x3 = c('Didnt Left','Left')
+leftt = cbind.data.frame(leftt,x3)
+colnames(leftt)[1]="x"
+leftt$x3= as.factor(leftt$x3)
+leftt$x = as.numeric(leftt$x)
+library(dplyr)
+library(highcharter)
+options(highcharter.theme = hc_theme_monokai())
+hc <- leftt %>%
+  hchart(
+    "pie", hcaes(x = leftt$x3,y= leftt$x),
+    name = "Count"
+    )%>%
+  hc_title(
+    text = "How many Employees left",
+    style = list(fontWeight = "bold", fontSize = "30px"),
+    align = "center"
+    )
+
+
+
+
+
+#department
+
+
+#par(mfrow=c(1,2))
+#dep.plot <- ggplot(data, aes(Department)) + 
+#  geom_bar(stat = "Count",fill = brewer.pal(length(unique(Department)), "Set3")
+#) +ggtitle("Distribution of employees per department")
+#
+#ggplotly(dep.plot)
+numb = nrow(data)
+#library(plotly)
+#fig <- plot_ly() 
+#fig <- fig %>%
+#  add_trace(
+#    type = "pie",
+#    title="Pie chart of employees distribution per departments",
+#    name = "",
+#    values =numb,
+#    labels = Department,
+#    text = Department,
+#    hovertemplate = "%{label}: <br>rate: %{percent} </br>")
+#
+#
+#fig
+time_spend_company = as.factor(time_spend_company)
+#e=ggplot(data, aes(x = factor(time_spend_company,ordered = TRUE))) + geom_bar(stat='count', #fill=c('#f3c5dc','#f3c5c5','#ffdcdc','#fff1c4','#f0ffc4','#d5e8ea','#bfd0e3','#98a6b5')) + #xlab('time_spend_company')
+#ggplotly(e)
+#
+#
+#
+
+ded = as.data.frame(data)
+ded[,11]= paste("",1:nrow(ded))
+colnames(ded)[11]= "id"
+View(ded)
+table(data$Department)
+ded$id = as.numeric(ded$id)
+accounting <- ded %>% filter(Department == "accounting")
+hr <- ded %>% filter(Department == "hr")
+it = ded %>% filter(Department == "IT")
+management = ded %>% filter(Department == "management")
+marketing = ded %>% filter(Department == "marketing")
+product_mng = ded %>% filter(Department == "product_mng")
+RandD = ded %>% filter(Department == "RandD")
+sales = ded %>% filter(Department == "sales")
+support = ded %>% filter(Department == "support")
+technical = ded %>% filter(Department == "technical")
+View(accounting)
+hc1 <- hchart(
+  accounting$Department,
+  color ="red", name = "accounting"
+  ) %>%
+  hc_add_series(
+    hr$Department,
+    color = "blue", 
+    name = "hr",
+    type = "column"
+    )%>%
+  hc_add_series(
+    it$Department,
+    color = "orange", 
+    name = "IT",
+    type = "column"
+    )%>%
+  hc_add_series(
+    management$Department,
+    color = "green", 
+    name = "management",
+    type = "column"
+    )%>%
+  hc_add_series(
+    marketing$Department,
+    color = "yellow", 
+    name = "marketing",
+    type = "column"
+    )%>%
+  hc_add_series(
+    product_mng$Department,
+    color = "purple", 
+    name = "product_mng",
+    type = "column"
+    )%>%
+  hc_add_series(
+    RandD$Department,
+    color = "pink", 
+    name = "marketing",
+    type = "column"
+    )%>%
+  hc_add_series(
+    sales$Department,
+    color = "cyan", 
+    name = "sales",
+    type = "column"
+    )%>%
+  hc_add_series(
+    support$Department,
+    color = "lime", 
+    name = "support",
+    type = "column"
+    )%>%
+  hc_add_series(
+    technical$Department,
+    color = "brown", 
+    name = "technical",
+    type = "column"
+    )%>%
+  hc_title(
+    text = "Employees per Departement",
+    style = list(fontWeight = "bold", fontSize = "30px"),
+    align = "center"
+    )
+
+  
+
+library(plotly)
+#fig <- plot_ly(y = satisfaction_level, type = "box", name="Satisfaction Level")
+#fig <- fig %>% add_trace(y = last_evaluation, name="Last Evaluation")
+#
+#fig
+#fig2 <- plot_ly(y = average_montly_hours , type = "box", name="Average Monthly Hours")
+#fig2
+options(highcharter.theme = hc_theme_google())
+hec <- hchart(
+  density(ded$satisfaction_level), 
+  type = "area", name = "Satisfaction level"
+  )%>%
+  hc_add_series(
+    density(ded$last_evaluation), type = "area",
+    color = "#B71C1C", 
+    name = "Last evaluation"
+    )
+
+
+
+data$Work_accident = as.factor(Work_accident)
+
+left2=as.data.frame(sum(table(data$time_spend_company)[1]))
+View(left2)
+leftt1=as.data.frame(left2)
+View(leftt1)
+View(x)
+leftt1[2,]=sum(table(data$time_spend_company)[2])
+leftt1[3,]=sum(table(data$time_spend_company)[3])
+leftt1[4,]=sum(table(data$time_spend_company)[4])
+leftt1[5,]=sum(table(data$time_spend_company)[5])
+leftt1[6,]=sum(table(data$time_spend_company)[6])
+leftt1[7,]=sum(table(data$time_spend_company)[7])
+leftt1[8,]=sum(table(data$time_spend_company)[8])
+x4 = c('2 Years','3 Years','4 Years','5 Years','6 Years','7 Years','8 Years','10 Years')
+leftt1 = cbind.data.frame(leftt1,x4)
+colnames(leftt1)[1]="x"
+leftt1$x4= as.factor(leftt1$x4)
+leftt1$x = as.numeric(leftt1$x)
+length(leftt1$x)
+
+options(highcharter.theme = hc_theme_ffx())
+hc2 <- leftt1 %>%
+  hchart(
+    "pie", hcaes(x = leftt1$x4,y= leftt1$x),
+    name = "Count"
+    )%>%
+  hc_title(
+    text = "Time Spent by the employee in the Company",
+    style = list(fontWeight = "bold", fontSize = "30px"),
+    align = "center"
+    )
+
+
+
+#labelss = c('No','Yes')
+#workac_plot=ggplot(data=data, aes(x=Work_accident)) +geom_bar(stat="count", #position=position_dodge(),fill=c('steelblue', 'red'),size=0.5 ,colour="black") + #scale_fill_manual(values=c("#999999", "#E69F00"))+ggtitle("Did the employee had an accident? ") + #scale_x_discrete(labels=c('No','Yes'))
+#
+#ggplotly(workac_plot)  
+#promotion_last_5years_plot = ggplot(data=data, aes(x=promotion_last_5years)) +geom_bar(stat="count", #position=position_dodge(),fill=c('steelblue', 'red'),size=0.5 ,colour="black") + #scale_fill_manual(values=c("#999999", "#E69F00"))+ggtitle("Did the employee had a promotion in the last 5 years? #") + scale_x_discrete(labels=c('No','Yes'))
+#ggplotly(promotion_last_5years_plot)
+
+
+
+#Satisfaction / salaire
+#View(df_scaled)
+#df2 = cor(df_scaled[,-9])
+#df2
+#heat_plot = plot_ly (x=colnames(df2),y=colnames(df2),z = df2, type = "heatmap")
+#heat_plot
+df2 = cor(dfdf)
+df2
+heat_plot = plot_ly (x=colnames(df2),y=colnames(df2),z = df2, type = "heatmap")
+heat_plot
+options(highcharter.theme = hc_theme_elementary(tooltip = list(valueDecimals = 2)))
+hmap=hchart(df2, type = "heatmap", hcaes(x = colnames(df2), y = colnames(df2), value = df2))%>%
+  hc_title(
+    text = "Correlation Matrix",
+    style = list(fontWeight = "bold", fontSize = "30px"),
+    align = "center"
+    )
+
+
+#this heatmap below represent the correlation between our variables. in fact, we have a negative correlation  between left and satisfaction level, which means that the employee left when their  satisfaction level is low 
+
+
+
+
+#test <- plot_ly(ggplot2::diamonds, y = ~average_montly_hours , color = ~left, type = "box")
+
+#test
+
+#corrprom <- plot_ly(ggplot2::diamonds, x = ~promotion_last_5years, y = ~average_montly_hours, color = ~clarity, #type = "box")
+#corrprom <- fig %>% layout
+#
+#corrprom
+work0 = ded %>% filter(Work_accident == "0")
+work1 = ded %>% filter(Work_accident == "1")
+accident0 = ded %>% filter(Work_accident == "0")
+accident1 = ded %>% filter(Work_accident == "1")
+accident1$Work_accident= as.factor(accident1$Work_accident)
+accident0$Work_accident= as.factor(accident0$Work_accident)
+options(highcharter.theme = hc_theme_bloom())
+hc3 <- hchart(
+  accident0$Work_accident,
+  color ="red", name = "No accidents"
+  ) %>%
+  hc_add_series(
+    accident1$Work_accident,
+    color = "blue", 
+    name = "Had an Accident",
+    type = "column"
+    )%>%
+  hc_title(
+    text = "Work Accidents",
+    style = list(fontWeight = "bold", fontSize = "30px"),
+    align = "center"
+    )
+hc3
+
+
+
+
+
+#PCA
+
+
+data2=data
+row.names(data2)= paste("employee",1:nrow(data2))
+rownames(data2)
+
+
+
+library(FactoMineR)
+res.pca=PCA(data2,quali.sup =6:10)
+# Dimension 1 represents all the efforts that employees put into their work through those variable time spend company , number project , average monthly hours and last evaluation 
+#Dimension 2 represents the feeling felt during or after accomplishing the effort previously mentioned in the first dimension 
+
+
+
+# to visualize more efficiently the graph of individuals we will proceed with the FactoExtra library 
+library(factoextra)
+groups=as.factor(Department[1:14999])
+fviz_pca_ind(res.pca,
+             col.ind = groups, # Habillage par groupes 
+             palette=c('#521070','#75892e','#b54e10','#b5002c','#15538c',
+                       '#f96a35','#c63d0a','#05d86e','#06934c','#ffc3a0'), 
+             addEllipses=TRUE,
+             ellips.type="confidence",
+             legend.title="Departments",
+             repel=TRUE
+             ) 
+
+# We can observe a similarity between employees for all departments and the color are inappropriate to differentiate more effectively between ellipses
+#=> that's why we will took a couple of ellipses with more pertinent colors to try to distinguish between them 
+
+
+
+
+
+
+eclipse1=subset(data2, Department == 'sales'|Department=='management')
+eclipse1
+nrow(eclipse1)
+levels(eclipse1$Department)
+eclipse1$Department=as.factor(eclipse1$Department)
+troups=as.factor(eclipse1$Department[1:4770])
+
+
+
+
+
+PCA1=PCA(eclipse1,quali.sup =6:10)
+fviz_pca_ind(PCA1,
+             col.ind = eclipse1$Department, # Habillage par groupes 
+             palette=c('#521070','#b54e10'), 
+             addEllipses=TRUE,
+             ellips.type="confidence",
+             legend.title="Departments",
+             repel=TRUE
+             )
+
+# sales employees tend to be more satisfied then management employees by the work in the company
+
+
+
+
+eclipse2=subset(data2, Department == 'accounting'|Department=='hr')
+eclipse2
+nrow(eclipse2)
+levels(eclipse2$Department)
+eclipse2$Department=as.factor(eclipse2$Department)
+PCA2=PCA(eclipse2,quali.sup =6:10)
+fviz_pca_ind(PCA2,
+             col.ind = eclipse2$Department, # Habillage par groupes 
+             palette=c('#521070','#b54e10'), 
+             addEllipses=TRUE,
+             ellips.type="confidence",
+             legend.title="Departments",
+             repel=TRUE
+             )
+#accounting employees tend to have more projects than HR employees
+
+
+
+eclipse3=subset(data2, Department == 'IT'|Department=='marketing')
+eclipse3
+nrow(eclipse3)
+levels(eclipse3$Department)
+eclipse3$Department=as.factor(eclipse3$Department)
+PCA3=PCA(eclipse3,quali.sup =6:10)
+fviz_pca_ind(PCA3,
+             col.ind = eclipse3$Department, # Habillage par groupes 
+             palette=c('#521070','#b54e10'), 
+             addEllipses=TRUE,
+             ellips.type="confidence",
+             legend.title="Departments",
+             repel=TRUE
+             )
+# the 2 ellipses are identicals so we cannot distinguish a noticeable difference between them
+
+
+
+eclipse4=subset(data2, Department == 'product_mng'|Department=='RandD')
+eclipse4
+nrow(eclipse4)
+levels(eclipse4$Department)
+eclipse4$Department=as.factor(eclipse4$Department)
+PCA4=PCA(eclipse4,quali.sup =6:10)
+fviz_pca_ind(PCA4,
+             col.ind = eclipse4$Department, # Habillage par groupes 
+             palette=c('#521070','#b54e10'), 
+             addEllipses=TRUE,
+             ellips.type="confidence",
+             legend.title="Departments",
+             repel=TRUE
+             )
+#product management employees tend to have more projects and have higher evaluation score than R&D 
+
+
+
+eclipse5=subset(data2, Department == 'support'|Department=='technical')
+eclipse5
+nrow(eclipse5)
+levels(eclipse5$Department)
+eclipse5$Department=as.factor(eclipse5$Department)
+PCA5=PCA(eclipse5,quali.sup =6:10)
+fviz_pca_ind(PCA5,
+             col.ind = eclipse5$Department, # Habillage par groupes 
+             palette=c('#521070','#b54e10'), 
+             addEllipses=TRUE,
+             ellips.type="confidence",
+             legend.title="Departments",
+             repel=TRUE
+             )
+#technical employees tend to have more projects and consequently more average monthly hours 
+
+
+#In order to have the complete perspective of all the variables , we will take a look on the other dimensions  
+
+library(factoextra)
+# We have in total 5 dimensions (5 active variables)
+res.pca1=PCA(data2,quali.sup =6:10, axes =c(2,3))
+res.pca2=PCA(data2,quali.sup =6:10, axes =c(1,3))
+# the third dimension for the two figure refers to seniority of the employees in the company 
+
+#inertia Study 
+
+res.pca$eig
+res.pca$eig[,1]>1 
+# According to Kaiser method => we will keep the 2 first dimension 
+get_eig(res.pca)
+fviz_screeplot(res.pca) 
+# According to the Coude method => the break is not visible , so we can't count on Coude method
+
+
+
+#individuals study 
+
+res.pca$ind$coord
+which.max(res.pca$ind$coord[,1]) # the 810th employee had the maximum score , in the first dimension that is related to the effort putted in the work , so s/he's the most hardworking one 
+data2[810,]
+
+which.min(res.pca$ind$coord[,1]) # the 6885th employee had the minimum score , in the first dimension that is related to the effort putted in the work , so he or she is the laziest one 
+data2[6885,]
+
+which.max(res.pca$ind$coord[,2]) # the 2601th employee is the most satisfied one with his/her job in the company 
+data2[2601,]
+
+which.min(res.pca$ind$coord[,2]) # 11293th is the most unsatisfied one with his/her job in the company 
+data2[11293,]
+
+which.max(res.pca$ind$coord[,3]) # the 11347th employee is the oldest in the company
+data2[11347,] 
+
+which.min(res.pca$ind$coord[,3]) # the 11102th is the newest one in the company 
+data2[11102,]
+# We need to verify for each previous affirmation (exemple)
+# which.min(time_spend_company)
+# time_spend_company[51]
+
+
+
+#Quality of representation of the employees (individuals) by dimensions
+res.pca$ind$cos2
+
+# first Dimension 
+which.max(res.pca$ind$cos2[,1]) #=> the 10353th employee is the best represented one by the first dimension
+which.min(res.pca$ind$cos2[,1]) #=> the 3244 th employee is the less represented one by the first dimension
+
+# Second Dimension 
+which.max(res.pca$ind$cos2[,2]) #=> the 11069th employee is the best represented one by the second dimension
+which.min(res.pca$ind$cos2[,2]) #=> the 2471 employee is the less represented one by the second dimension
+
+# Third Dimension 
+which.max(res.pca$ind$cos2[,3]) #=> the 2472th is the best represented one by the third dimension
+which.min(res.pca$ind$cos2[,3]) #=> the 10837th employee is the less represented one by the second dimension
+
+
+
+
+# Contibution of each employee in the construction of the dimensions 
+res.pca$ind$contrib
+
+# first Dimension 
+which.max(res.pca$ind$contrib[,1]) #=> 810th (check coord)
+which.min(res.pca$ind$contrib[,1]) #=> 4038th 
+
+# Second Dimension 
+which.max(res.pca$ind$contrib[,2]) #=> 11293th (check coord , most unsatisfied)
+which.min(res.pca$ind$contrib[,2]) #=> 2471th 
+
+# Third Dimension 
+which.max(res.pca$ind$contrib[,3]) #=> 11347th (check coord , oldest)
+which.min(res.pca$ind$contrib[,3]) #=> 10837th 
+
+
+
+#variable study 
+
+res.pca$var$cor
+
+res.pca$var$cor[,1]>0.5 #=> most correlated variables with the first dimension 
+res.pca$var$cor[,1]<0 #=> inversely correlated variables with the first dimension 
+
+res.pca$var$cor[,2]>0.5 #=> #=> most correlated variables with the second dimension
+res.pca$var$cor[,2]<0 #=> inversely correlated variables with the second dimension 
+
+res.pca$var$cor[,3]>0.5 #=> #=> most correlated variables with the third dimension
+res.pca$var$cor[,3]<0 #=> inversely correlated variables with the third dimension 
+
+
+
+
+res.pca$var$contrib
+#first dimension 
+#=>  the variable number_project  contributed the most to the construction of the first dimension 
+#=> the variable satisfaction_level contributed the less to the construction of the first dimension
+
+#Second dimension 
+#=> the variable satisfaction_level contributed the most to the construction of the second dimension
+#=> the variable number_project  contributed the less to the construction of the second dimension 
+
+#third dimension 
+#=> the variable time_spend_company contributed the most to the construction of the third dimension
+#=> the variable last_evaluation contributed the less to the construction of the third dimension  
+
+
+
+
+#Quality of representation of the variables by dimensions
+res.pca$var$cos2
+
+res.pca$var$cos2[,1]>0.5 #=> the first dimension have a good representation of those variables 
+res.pca$var$cos2[,2]>0.5 #=> the second dimension have a good representation of those variables 
+res.pca$var$cos2[,3]>0.5 #=> the third dimension have a good representation of those variables 
+
+
+
+
+#Considering the fact that half of our variables are factors and consequetly we had to consider them as sup variable. We will take the ACM reduction  method in consideration and see if it's more suitable for our dataset than PCA 
+#ACM 
+
+res.acm=MCA(data2,quanti.sup = 1:5)
+# Compared to PCA (58% approximately) , the MCA doesn't have significant dimensions with a total of 17,97% 
+# => So we will proceed with a PCA as the most practical synthetic information method 
+
+
+df_scaled
+df_scaled$salary = as.numeric(df_scaled$salary)
+d1=dist(df_scaled[1:4600,],method="euclidean")
+h1=hclust(d1,method="ward.D")
+h1$method
+h1$dist.method 
+h1$height
+h1$order
+h1$merge
+plot(h1)
+View(df_scaled)
+df_scaled$salary = scale(df_scaled$salary)
+rownames(df_scaled) = paste("employee",1:nrow(df_scaled))
+df_scaled$salary =as.numeric(df_scaled$salary)
+library(clValid)
+intern=clValid(df_scaled[1:4600,],2:4,clmethods=c("hierarchical"),validation="internal")
+summary(intern)
+library(FactoMineR)
+
+classes= cutree(h1,k=2)
+classes
+View(classes)
+table(classes)
+d.class=cbind.data.frame(df_scaled[1:4600,],as.factor(classes))
+View(d.class)
+colnames(d.class)[10]="classes.cah"
+catdes(d.class, num.var =10)
+library(factoextra)
+fviz_cluster(object=list(data = df_scaled[1:4600,], cluster = classes))
+
+
+
+
+
+
+kcdeca=kmeans(df_scaled[1:4600,],centers=2,iter.max = 1000)
+kcdeca$centers
+kcdeca$size
+kcdeca$cluster
+kcdeca$withinss
+d.class=cbind.data.frame(d.class,classes=as.factor(kcdeca$cluster))
+
+colnames(d.class)[11]="classe.kmeans"
+View(d.class)
+res.cat1 = catdes(d.class,num.var = 11)
+res.cat1
+intern1=clValid(df_scaled[1:4600,],2:6,clMethods=c("hierarchical","kmeans"), validation= "internal")
+summary(intern1)
+fviz_cluster(object=list(data = df_scaled[1:4600,], cluster = kcdeca$cluster))
+
+
+
+
+#Decision Tree
+
+View(data)
+data_logit = data[,-9]
+data_logit = data_logit[,-9]
+data_logit = as.data.frame(data_logit)
+data_logit = scale(data_logit[,1:5],center= T, scale= T)
+data_logit = cbind.data.frame(data_logit,data[,6:8])
+data_logit = cbind.data.frame(data_logit,data[,10])
+View(data_logit)
+colnames(data_logit)[9] = "salary"
+data_logit$salary = as.character(data_logit$salary)
+data_logit$salary[data_logit$salary=='low']<-"0"
+data_logit$salary[data_logit$salary=='medium']<-"0"
+data_logit$salary[data_logit$salary=='high']<-"1"
+data_logit$salary =as.factor(data_logit$salary)
+View(data_logit)
+modele_c = glm(data_logit$salary~.,data = data_logit,family = binomial,maxit = 100)
+summary(modele_c)
+str_constant<-"~1"
+str_all<-"~satisfaction_level+last_evaluation+number_project+average_montly_hours+time_spend_company+promotion_last_5years+Work_accident+left"
+library(MASS)
+#modele.forward<-stepAIC(modele_c,scope = list(lower=str_constant, upper = str_all),trace = T, data = data_logit, direction = "forward")
+#summary(modele.forward)  
+#modele_complet= glm (salary ~ ., data =data_logit , family= binomial,maxit=100)#modele complet
+#summary(modele_complet)
+modele.backward = stepAIC(modele_c, ~. , trace=TRUE , data= data_logit, direction  = "backward")
+library(rpart)
+library(rpart.plot)
+View(dataa)
+dataa = data[,-9]
+dataa = as.data.frame(dataa)
+dataa$salary = as.character(dataa$salary)
+dataa$salary[dataa$salary=='low']<-"0"
+dataa$salary[dataa$salary=='medium']<-"0"
+dataa$salary[dataa$salary=='high']<-"1"
+
+dataa$salary =as.factor(dataa$salary)
+
+model.tree<-rpart(salary ~. ,data=dataa[1:2000,],method="class",control=rpart.control(minsplit=5,cp=0))
+rpart.plot(model.tree)
+
+```
+
+# Introduction
+
+## Column {data-width=350}
+
+### Introduction
+
+<div class= "alert alert-dismissible alert-danger">
+<strong style="color : black">Scope/context : </strong> <a class="alert-link">In the
+Presentation Dataset Due to The Great Resignation phenomenon in the USA
+which describe elevated rate of workers quitting their job starting in
+the spring of 2021 , consequently to the covid crisis and the paradigm
+shift that have operated with the new work market reality and its new
+approach (remote work , ) , our enterprise search to understand and to
+anticipate why employee would and will quit their job , considering the
+internal parameters and try submitting again. </a>
+</div>
+
+<div class= "alert alert-dismissible alert-danger">
+<strong style="color : black">Variables</strong>
+
+<p style="color : black"> <a class="alert-link">Number of project</a> : describe how many
+projects did every employee endorse during his working sessions</p>
+
+<p style="color : black"><a class="alert-link">Average_monthly_hours</a>: average of
+hours spend at working</p>
+
+<p style="color : black"> <a  class="alert-link">Time_spend_in company</a>: how many
+years did the employee spent in the company </p>
+
+<p style="color : black"><a  class="alert-link">Satisfaction level</a>: how much the
+employee is satisfied of his/her job</p>
+
+<p style="color : black"> <a  class="alert-link">Left</a>: express if the employee had
+or hadn't left the job</p>
+
+<p style="color : black"> <a  class="alert-link">promotion_last_5years</a>: show if
+the employee got a promotion in the last 5 years </p>
+
+<p style="color : black"><a class="alert-link">Department</a>: show in which
+department the employee is affected/belong</p>
+
+<p style="color : black"> <a  class="alert-link">Salary</a>: Show the level of the
+salary for each employee</p>
+
+<p style="color : black"> <a  class="alert-link"> Work_accident</a>: Show if the employee got a work accident before</p>
+
+<p style="color : black"><a class="alert-link">Last evaluation</a>: show the last evaluation that the employee got
+from the HR department</p>
+</div>
+
+## Column {data-width=650}
+
+### Scoop Of context 
+
+<video width="650" height="500" controls>
+  <source src="tl.mp4" type="video/mp4">
+</video>
+
+# Exploratory analysis
+
+## Column {.tabset}
+
+### Plot 1
+
+```{r}
+hc 
+```
+
+>
+
+### Plot 2
+
+```{r}
+hc1
+```
+
+## Column
+
+### Plot 3
+
+```{r}
+hec
+```
+
+>
+
+## Column
+
+### Plot 4
+
+```{r}
+hc2
+```
+
+>
+
+### Plot 5
+
+```{r}
+hc3
+```
+
+>
+
+# Correlation Matrix
+
+## Column
+
+### Matrix
+
+```{r}
+options(highcharter.theme = hc_theme_smpl(tooltip = list(valueDecimals = 2)))
+hmap
+```
+
+# Advanced Exploratory Analysis
+
+## Column {.tabset}
+
+### Chart 1
+
+```{r}
+res.pca=PCA(data2,quali.sup =6:10)
+```
+
+>
+
+### Chart 2
+
+```{r}
+fviz_pca_ind(res.pca,
+             col.ind = groups, # Habillage par groupes 
+             palette=c('#521070','#75892e','#b54e10','#b5002c','#15538c',
+                       '#f96a35','#c63d0a','#05d86e','#06934c','#ffc3a0'), 
+             addEllipses=TRUE,
+             ellips.type="confidence",
+             legend.title="Departments",
+             repel=TRUE
+             ) 
+```
+
+>
+
+### Chart 3 MCA
+
+```{r}
+res.acm=MCA(data2,quanti.sup = 1:5)
+```
+
+>
+
+# Unsupervised Clustering
+
+## Column {.tabset}
+
+### CAH
+
+```{r}
+fviz_cluster(object=list(data = df_scaled[1:4600,], cluster = classes))
+```
+
+>
+
+### Kmeans
+
+```{r}
+fviz_cluster(object=list(data = df_scaled[1:4600,], cluster = kcdeca$cluster))
+```
+
+>
+
+# Supervised Learning
+
+## Column
+
+### Logit Model
+
+```{r}
+summary(modele_c)
+```
+
+>
+
+# Decision Tree
+
+## Column
+
+### Decision Tree Plot
+
+```{r}
+rpart.plot(model.tree)
+```
+
+>
